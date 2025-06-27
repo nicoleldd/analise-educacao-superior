@@ -504,16 +504,7 @@ if not df.empty:
                 Soma_Livros_Eletronicos=('Total de Livros Eletrônicos', 'sum')
             ).reset_index()
             
-            menor_valor = df_treemap_data['Soma_Livros_Eletronicos'].min()
-            menor_index = df_treemap_data['Soma_Livros_Eletronicos'].idxmin()
-              
-
-            df_treemap_data.loc[menor_index, 'Organização Acadêmica'] = "IF"
-             # Criar coluna auxiliar de texto (vazia para a menor categoria)
-            df_treemap_data['custom_text'] = df_treemap_data.apply(
-                lambda row: "" if row['Organização Acadêmica'] == "IF" else f"{row['Organização Acadêmica']}<br>{row['Soma_Livros_Eletronicos']:,}",
-                axis=1
-            )
+            
             fig_treemap_livros = px.treemap(
                  df_treemap_data, 
                 path=['Organização Acadêmica'], 
