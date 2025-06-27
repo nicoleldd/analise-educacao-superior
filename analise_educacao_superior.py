@@ -299,7 +299,7 @@ if not df.empty:
             total_docentes_para_grafico = docentes_long['Quantidade de Docentes'].sum()
             
             # --- Layout para Título e Métrica ---
-            st.markdown("#### Quantidade de docentes do sexo feminino e masculino por organização acadêmica")
+            st.markdown("#### Quantidade de Docentes do sexo feminino, Quantidade de docentes do sexo masculino por Organização Acadêmica")
             
             # Usando colunas para a métrica total e o título da sub-seção do gráfico
             col_total_docentes, col_sub_titulo_grafico = st.columns([0.25, 0.75])
@@ -308,25 +308,27 @@ if not df.empty:
                 # círculo
 
                 st.markdown(f"""
-               <div style="
-            border: 4px solid #3366CC; 
-            border-radius: 50%; 
-            width: 150px; 
-            height: 150px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            margin: 20px auto;
-            color: white;
-            background-color: black;
-            text-align: center;
-        ">
-            <span style="font-size: 14px;">Quantidade total de docentes</span>
-            <span style="font-size: 24px; font-weight: bold;">{f'{total_docentes_para_grafico / 1000:.1f}'.replace(",", "X").replace(".", ",").replace("X", ".")} mil</span>
-        </div>
-        """, unsafe_allow_html=True)
-        
+                <div style="
+                    border: 4px solid #3366CC; 
+                    border-radius: 50%; 
+                    width: 150px; 
+                    height: 150px; 
+                    display: flex; 
+                    flex-direction: column; 
+                    justify-content: center; 
+                    align-items: center; 
+                    margin: 20px auto;
+                    color: {'white' if st.config.get_option('theme.base') == 'dark' else 'black'};
+                    background-color: {'#0E1117' if st.config.get_option('theme.base') == 'dark' else 'white'};
+                    text-align: center;
+                ">
+                    <span style="font-size: 14px;">Quantidade total de docentes</span>
+                    <span style="font-size: 24px; font-weight: bold;">{f'{total_docentes_para_grafico / 1000:,.1f}'.replace(",", "X").replace(".", ",").replace("X", ".")} mil</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col_sub_titulo_grafico:
+                st.markdown("##### Quantidade de docentes do sexo feminino / Quantidade de docentes do sexo masculino")
 
 
             # Ordena a coluna 'Organização Acadêmica' para uma apresentação consistente no eixo X
@@ -361,29 +363,22 @@ if not df.empty:
                 category_orders=category_orders 
             )
             # Formatação dos números nas barras para "mil" e posicionamento externo
-            fig_docentes_org_sexo.update_traces(texttemplate='%{y:.1f}', textposition='outside')
+            fig_docentes_org_sexo.update_traces(texttemplate='%{y:,.1s}', textposition='outside')
             
             fig_docentes_org_sexo.update_layout(
-    xaxis_title="Organização Acadêmica", 
-    yaxis_title="",  # Sem título no eixo Y
-    hovermode="x unified",
-
-    # Legenda posicionada à direita do gráfico
-    legend=dict(
-        orientation="v",        # Vertical (uma abaixo da outra)
-        y=1,                    # Alinhado ao topo
-        yanchor="top",
-        x=1.02,                 # Fora da área do gráfico, à direita
-        xanchor="left",
-        title_text="",
-        font=dict(             # Aqui você altera o tamanho e a cor da fonte
-        size=18,           # Tamanho da fonte (pode aumentar para 16, 18...)
-        color="white"      # Se estiver usando fundo escuro
-        )         # Remove o título da legenda
-    ),
-
-    margin=dict(r=160)  # Garante espaço à direita para a legenda
-)
+                xaxis_title="Organização Acadêmica", 
+                yaxis_title="", # Eixo Y sem título para replicar a imagem
+                hovermode="x unified",
+                # Posicionamento da legenda abaixo do gráfico
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=-0.2, # Ajusta para ficar abaixo do gráfico
+                    xanchor="center",
+                    x=0.10, # Centraliza horizontalmente
+                    title_text="" # Remove o título da legenda
+                )
+            )
             st.plotly_chart(fig_docentes_org_sexo, use_container_width=True)
         else:
             st.warning("Não foi possível gerar 'Quantidade de Docentes por Sexo e Organização Acadêmica': Colunas necessárias ausentes ou dados filtrados vazios.")
